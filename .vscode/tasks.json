@@ -30,6 +30,19 @@
       }
     },
     {
+      "label": "🔷 Prisma Generate",
+      "type": "npm",
+      "script": "prisma:generate",
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
       "label": "💣  TEST",
       "type": "npm",
       "script": "test:watch",
