@@ -10,7 +10,6 @@ COPY tsconfig.json tsconfig.json
 COPY prisma ./prisma/
 
 RUN yarn
-RUN yarn prisma:generate
 
 COPY . .
 
