@@ -1,4 +1,5 @@
-import { Static, Type } from '@sinclair/typebox';
+import { Prisma, Note } from '@prisma/client';
+import { Type } from '@sinclair/typebox';
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 
@@ -8,22 +9,14 @@ const Note = Type.Object({
   text: Type.Optional(Type.String({})),
 });
 
-type Note = Static<typeof Note>;
-
 const Notes = Type.Array(Note);
-
-type Notes = Note[];
 
 const CreateNoteInput = Type.Object({
   title: Type.String(),
   text: Type.Optional(Type.String({})),
 });
 
-type CreateNoteInput = Omit<Note, 'id'>;
-
 const UpdateNoteInput = CreateNoteInput;
-
-type UpdateNoteInput = CreateNoteInput;
 
 const notes = async (fastify: FastifyInstance) => {
   fastify.get(
@@ -36,18 +29,7 @@ const notes = async (fastify: FastifyInstance) => {
       },
     },
     async () => {
-      return [
-        {
-          id: 1,
-          title: 'Note Test',
-          text: 'Note Note Note',
-        },
-        {
-          id: 2,
-          title: 'Note Test 2',
-          text: 'Note Note Note 2',
-        },
-      ];
+      return await fastify.prisma.note.findMany();
     },
   );
 
@@ -63,17 +45,22 @@ const notes = async (fastify: FastifyInstance) => {
         },
       },
     },
-    async (req) => {
+    async (req, reply) => {
       const { id } = req.params;
-      return {
-        id: id,
-        title: 'Note Test',
-        text: 'Note Note Note',
-      };
+
+      const note = await fastify.prisma.note.findUnique({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!note) reply.notFound();
+
+      reply.send(note);
     },
   );
 
-  fastify.post<{ Body: CreateNoteInput; Response: Note }>(
+  fastify.post<{ Body: Prisma.NoteCreateInput; Response: Note }>(
     '/notes',
     {
       schema: {
@@ -85,15 +72,16 @@ const notes = async (fastify: FastifyInstance) => {
     },
     async (req) => {
       const { title, text } = req.body;
-      return {
-        id: 1,
-        title: title,
-        text: text,
-      };
+      return await fastify.prisma.note.create({
+        data: {
+          title,
+          text,
+        },
+      });
     },
   );
 
-  fastify.put<{ Params: { id: number }; Body: UpdateNoteInput; Response: Note }>(
+  fastify.put<{ Params: { id: number }; Body: Prisma.NoteUpdateInput; Response: Note }>(
     '/notes/:id',
     {
       schema: {
@@ -106,14 +94,30 @@ const notes = async (fastify: FastifyInstance) => {
         },
       },
     },
-    async (req) => {
+    async (req, reply) => {
       const { id } = req.params;
       const { title, text } = req.body;
-      return {
-        id: id,
-        title: title,
-        text: text,
-      };
+
+      const exists =
+        (await fastify.prisma.note.count({
+          where: {
+            id,
+          },
+        })) !== 0;
+
+      if (!exists) {
+        reply.notFound();
+      }
+
+      return await fastify.prisma.note.update({
+        where: {
+          id,
+        },
+        data: {
+          title,
+          text,
+        },
+      });
     },
   );
 
@@ -131,7 +135,23 @@ const notes = async (fastify: FastifyInstance) => {
     },
     async (req, reply) => {
       const { id } = req.params;
-      console.log(`Deleted ${id}`);
+
+      const exists =
+        (await fastify.prisma.note.count({
+          where: {
+            id,
+          },
+        })) !== 0;
+
+      if (!exists) {
+        reply.notFound();
+      }
+
+      await fastify.prisma.note.delete({
+        where: {
+          id,
+        },
+      });
       reply.code(204).send();
     },
   );
