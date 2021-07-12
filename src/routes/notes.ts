@@ -3,6 +3,8 @@ import { Type } from '@sinclair/typebox';
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 
+// Json Validation
+
 const Note = Type.Object({
   id: Type.Number(),
   title: Type.String(),
@@ -11,12 +13,16 @@ const Note = Type.Object({
 
 const Notes = Type.Array(Note);
 
-const CreateNoteInput = Type.Object({
+const NoteInput = Type.Object({
   title: Type.String(),
   text: Type.Optional(Type.String({})),
 });
 
-const UpdateNoteInput = CreateNoteInput;
+const CreateNoteInput = NoteInput;
+
+const UpdateNoteInput = NoteInput;
+
+// Routes
 
 const notes = async (fastify: FastifyInstance) => {
   fastify.get(
