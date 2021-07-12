@@ -1,36 +1,41 @@
-# fastify-typescript-prisma
-A simple template for a Fastify server with Typescript support, and Prisma.
+# Fastify-Typescript-Prisma
 
-## ⚠️ WIP 
 
-## Run with docker compose
+A simple template for a Fastify server with Typescript support, and Prisma + psql.
+
+
+
+# How to run
+
+### Run with docker compose
 
 - Clone project
 
 - Create .env file based on .env.example
 
-- run "docker compose up" (DEVELOP w/DOcker task if using vsCode)
+- run  `docker compose up` (or click on the `DEVELOP w/Docker` task if you are using vsCode)
 
-- Enter container and execute "npx prisma migrate dev" to apply initial migration
+- Enter docker container and execute `npx prisma migrate dev` to apply initial migration
 
-- Try some calls using the attached postman collection 
+- Try some calls using the attached [postman collection ](https://github.com/AlexPagnotta/fastify-typescript-prisma/blob/master/postman-collection.json)
 
 
-## Local
+### Local
 
 - Clone project
 
-- run "yarn install"
+- run `yarn install`
 
-- Create .env file based on .env.example, N.B use "localhost" as DB_HOST for development without docker
+- Create `.env` file based on `.env.example`, ⚠️ use "localhost" as DB_HOST for local development without docker
 
-- Create DB using credential indicated in the .env file
+- Create DB using credentials indicated in the .env file
 
-- run "yarn start:dev" (DEVELOP task if using vsCode)
+- run `yarn start:dev` (or click on the `DEVELOP` task if you are using vsCode)
 
-- execute "npx prisma migrate dev" to apply initial migration
+- execute `npx prisma migrate dev` to apply initial migration
 
-- Try some calls using the attached postman collection 
+- Try some calls using the attached [postman collection ](https://github.com/AlexPagnotta/fastify-typescript-prisma/blob/master/postman-collection.json)
+
 
   
 
