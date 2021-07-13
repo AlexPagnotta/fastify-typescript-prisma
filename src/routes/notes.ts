@@ -1,7 +1,6 @@
 import { Prisma, Note } from '@prisma/client';
 import { Type } from '@sinclair/typebox';
 import { FastifyInstance } from 'fastify';
-import fp from 'fastify-plugin';
 
 // Json Validation
 
@@ -24,7 +23,7 @@ const UpdateNoteInput = NoteInput;
 
 // Routes
 
-const notes = async (fastify: FastifyInstance) => {
+const notes = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get(
     '/notes',
     {
@@ -163,4 +162,4 @@ const notes = async (fastify: FastifyInstance) => {
   );
 };
 
-export default fp(notes);
+export default notes;
